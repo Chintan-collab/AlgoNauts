@@ -1,1 +1,53 @@
 This is the README file for the AlgoNauts
+Jahanvi's branch structure:
+Directory Structure
+The project directory contains the following key components:
+
+env/: Virtual environment directory where Python packages are installed.
+templates/: Contains HTML templates used by Flask.
+frontend_UI.html: The main HTML template for the user interface.
+backend_UI.py: The main Flask application file that handles routing and rendering.
+README.md: This file with project documentation.
+
+Setup and Installation
+1. Clone the Repository
+bash
+Copy code
+git clone <repository-url>
+cd <repository-directory>
+2. Set Up the Virtual Environment
+Create a virtual environment (if not already created):
+
+bash
+Copy code
+python -m venv env
+Activate the virtual environment:
+
+On Windows:
+bash
+Copy code
+env\Scripts\activate
+On macOS/Linux:
+bash
+Copy code
+source env/bin/activate
+3. Install Dependencies
+Install the required Python packages using requirements.txt:
+
+bash
+Copy code
+pip install -r requirements.txt
+4. Run the Application
+Start the Flask development server:
+
+bash
+Copy code
+python backend_UI.py
+Navigate to http://127.0.0.1:5000/ in your web browser to access the Smart LLM Selector interface.
+
+Project Files
+backend_UI.py: Contains the Flask application and routing logic.
+templates/frontend_UI.html: HTML file used for rendering the user interface.
+Usage
+Submit a Prompt: Enter a prompt in the input field on the web page and click "Submit".
+View Results: The application will classify the prompt as 'simple' or 'complex' and display the selected model.

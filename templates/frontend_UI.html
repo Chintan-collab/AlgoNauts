@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart LLM Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .output span {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .model-selected {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .test-case {
+            padding: 10px;
+            margin: 5px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .pass {
+            background-color: green;
+            color: white;
+        }
+        .fail {
+            background-color: red;
+            color: white;
+        }
+        #graph-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Smart LLM Selector</h1>
+        
+        <!-- Input Section -->
+        <input type="text" id="userPrompt" placeholder="Type your prompt here..." />
+
+        <!-- Submit Button -->
+        <button onclick="submitPrompt()">Submit</button>
+
+        <!-- Output Section -->
+        <div class="output">
+            <p>Prompt Complexity: <span id="complexityResult"></span></p>
+            <div class="model-selected">
+                <p>Selected Model: <span id="selectedModel"></span></p>
+            </div>
+        </div>
+
+        <!-- Test Case Results Section -->
+        <h2>Test Case Results</h2>
+        <div id="test-case-results">
+            <!-- Test cases will be dynamically added here -->
+        </div>
+
+        <!-- Graph container -->
+        <div id="graph-container">
+            <h2>Test Case Status Summary</h2>
+            <div id="test-case-graph"></div>
+        </div>
+    </div>
+
+    <script>
+        // Example client-side JavaScript code for handling form submission
+        function submitPrompt() {
+            const prompt = document.getElementById('userPrompt').value;
+
+            // Make an API call to Flask backend
+            fetch('/classify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('complexityResult').textContent = data.complexity;
+                document.getElementById('selectedModel').textContent = data.model;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Fetch and display test case results
+        function loadTestCaseResults() {
+            fetch('/test_case_status')
+                .then(response => response.json())
+                .then(data => {
+                    // Display the test cases (pass/fail)
+                    const testCases = data.test_cases;
+                    const testCaseContainer = document.getElementById('test-case-results');
+                    testCaseContainer.innerHTML = ''; // Clear previous content
+                    testCases.forEach(test => {
+                        const div = document.createElement('div');
+                        div.className = 'test-case ' + (test.status === 'Pass' ? 'pass' : 'fail');
+                        div.textContent = `${test.name} - Status: ${test.status}`;
+                        testCaseContainer.appendChild(div);
+                    });
+
+                    // Render the graph
+                    document.getElementById('test-case-graph').innerHTML = data.graph_html;
+                })
+                .catch(error => console.error('Error fetching test case results:', error));
+        }
+
+        // Call the function to load test case results on page load
+        window.onload = loadTestCaseResults;
+    </script>
+
+</body>
+</html>
