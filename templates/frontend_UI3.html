@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart LLM Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: url('neural_network.gif') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        header {
+            background-color: rgba(0, 123, 255, 0.8);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        main {
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            max-width: 80%;
+            margin: auto;
+        }
+
+        section {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        #prompt-box, #output-box, #complexity-gauge, #task-type-icon, #model-icon, #energy-stats {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        #prompt-box {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { background-color: rgba(255, 255, 255, 0.9); }
+            50% { background-color: rgba(224, 247, 255, 0.9); }
+            100% { background-color: rgba(255, 255, 255, 0.9); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            width: 80%;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        #output-display {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Smart LLM Selector</h1>
+        <p>Efficient AI for Sustainable Innovation</p>
+    </header>
+    <main>
+        <section id="prompt-display">
+            <h2>Enter Prompt</h2>
+            <input type="text" id="prompt-input" placeholder="Type your prompt here...">
+            <button id="submit-btn">Submit Prompt</button>
+        </section>
+        <section id="output-display">
+            <h2>Output & Test Case Information</h2>
+            <div id="prompt-box">Prompt will appear here...</div>
+            <div id="complexity-gauge">Complexity: </div>
+            <div id="task-type-icon">Task Type: </div>
+            <div id="model-icon">Ideal Model: </div>
+            <div id="energy-stats">Energy Efficiency Metrics: </div>
+            
+        </section>
+    </main>
+    <footer>
+        <button id="category-report">View Category Report</button>
+        <button id="task-type-report">View Task Type Report</button>
+    </footer>
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const prompt = document.getElementById('prompt-input').value;
+            
+            fetch('/api/test_case', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('prompt-box').textContent = `Prompt: ${data.prompt}`;
+                document.getElementById('complexity-gauge').textContent = `Complexity: ${data.complexity}`;
+                document.getElementById('task-type-icon').textContent = `Task Type: ${data.task_type}`;
+                document.getElementById('model-icon').textContent = `Ideal Model: ${data.ideal_model}`;
+
+                const energyMetrics = data.energy_efficiency;
+                document.getElementById('energy-stats').innerHTML = `
+                    <p>Energy Saved: ${energyMetrics.energy_saved}</p>
+                    <p>Power Usage: ${energyMetrics.power_usage}</p>
+                    <p>Environmental Impact: ${energyMetrics.environmental_impact}</p>
+                `;
+            });
+        });
+
+        document.getElementById('category-report').addEventListener('click', () => {
+            window.location.href = 'category_report.html';
+        });
+
+        document.getElementById('task-type-report').addEventListener('click', () => {
+            window.location.href = 'task_type_report.html';
+        });
+    </script>
+</body>
+</html>
